@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="in.mobileappdev.ecommerce.LoginActivity">
+
+
+    <LinearLayout
+        android:id="@+id/center_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:padding="10dp"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/edt_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:layout_marginBottom="10dp"
+            android:padding="10dp"
+            android:hint="@string/hint_user_name"/>
+
+        <EditText
+            android:id="@+id/edt_password"
+            android:inputType="textPassword"
+            android:layout_width="match_parent"
+            android:layout_marginBottom="10dp"
+            android:padding="10dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_password"/>
+
+        <Button
+            android:id="@+id/btnSignIn"
+            android:padding="10dp"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/color_white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_sign_in"/>
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_launcher"
+        android:layout_margin="15dp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/center_content"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_margin="15dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txt_create_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textColor="@color/color_footer"
+            android:text="@string/create_account"/>
+
+        <TextView
+            android:id="@+id/txt_forgot_pwd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="15dp"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/color_footer"
+            android:text="@string/forgot_password"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

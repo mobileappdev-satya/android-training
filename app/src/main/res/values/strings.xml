@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">eCommerceDemo</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="create_account">New User? \nCreate account from here.</string>
+    <string name="btn_sign_in">Sign In</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_user_name">User Name</string>
+
+    <string name="hint_first_name">First Name</string>
+    <string name="hint_last_name">Last Name</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_mobile">Mobile Number</string>
+    <string name="hint_place">Place (City)</string>
+    <string name="btn_reset_pwd">Reset Password</string>
+</resources>
