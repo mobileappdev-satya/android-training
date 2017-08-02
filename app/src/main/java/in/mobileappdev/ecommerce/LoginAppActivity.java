@@ -71,10 +71,10 @@ public class LoginAppActivity extends AppCompatActivity implements View.OnClickL
         int id = view.getId();
 
         switch (id){
-            case R.id.btnSignIn :
+           /* case R.id.btnSignIn :
                 Intent signInIntent = new Intent(LoginAppActivity.this, RegisterActivity.class);
                 startActivity(signInIntent);
-                break;
+                break;*/
             case R.id.txt_create_account:
                 Intent registerIntent = new Intent(LoginAppActivity.this, RegisterActivity.class);
                 startActivity(registerIntent);
