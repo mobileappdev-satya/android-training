@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="in.mobileappdev.ecommerce.LoginActivity">
+    tools:context="in.mobileappdev.ecommerce.LoginAppActivity">
 
 
     <LinearLayout
@@ -22,6 +22,7 @@
             android:inputType="textEmailAddress"
             android:layout_marginBottom="10dp"
             android:padding="10dp"
+            android:background="@drawable/edittxt_bg"
             android:hint="@string/hint_user_name"/>
 
         <EditText
@@ -29,6 +30,7 @@
             android:inputType="textPassword"
             android:layout_width="match_parent"
             android:layout_marginBottom="10dp"
+            android:background="@drawable/edittxt_bg"
             android:padding="10dp"
             android:layout_height="wrap_content"
             android:hint="@string/hint_password"/>
@@ -36,7 +38,7 @@
         <Button
             android:id="@+id/btnSignIn"
             android:padding="10dp"
-            android:background="@color/colorPrimary"
+            android:background="@drawable/button_bg"
             android:textColor="@color/color_white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

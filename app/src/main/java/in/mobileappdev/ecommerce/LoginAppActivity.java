@@ -8,9 +8,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
+public class LoginAppActivity extends AppCompatActivity implements View.OnClickListener{
 
-    private String TAG = "LoginActivity";
+    private final String TAG = LoginAppActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,15 +72,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         switch (id){
             case R.id.btnSignIn :
-                Intent signInIntent = new Intent(LoginActivity.this, RegisterActivity.class);
+                Intent signInIntent = new Intent(LoginAppActivity.this, RegisterActivity.class);
                 startActivity(signInIntent);
                 break;
             case R.id.txt_create_account:
-                Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
+                Intent registerIntent = new Intent(LoginAppActivity.this, RegisterActivity.class);
                 startActivity(registerIntent);
                 break;
             case R.id.txt_forgot_pwd :
-                Intent forgotPwdIntent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+                Intent forgotPwdIntent = new Intent(LoginAppActivity.this, ForgotPasswordActivity.class);
                 startActivity(forgotPwdIntent);
                 break;
         }
