@@ -6,12 +6,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 public class LoginAppActivity extends AppCompatActivity implements View.OnClickListener{
 
     private final String TAG = LoginAppActivity.class.getSimpleName();
-
+    private EditText edtUsrname,edtPassword;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,6 +22,9 @@ public class LoginAppActivity extends AppCompatActivity implements View.OnClickL
         Button buttonSignIn = (Button) findViewById(R.id.btnSignIn);
         TextView textCreateAccount = (TextView) findViewById(R.id.txt_create_account);
         TextView textForgotPassword = (TextView) findViewById(R.id.txt_forgot_pwd);
+
+        edtUsrname = (EditText) findViewById(R.id.edt_username);
+        edtPassword = (EditText) findViewById(R.id.edt_password);
 
         //registering click listener
         buttonSignIn.setOnClickListener(this);
@@ -81,6 +85,11 @@ public class LoginAppActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.txt_forgot_pwd :
                 Intent forgotPwdIntent = new Intent(LoginAppActivity.this, ForgotPasswordActivity.class);
+
+                String email = edtUsrname.getText().toString();
+                if(email.length()>0){
+                    forgotPwdIntent.putExtra("usernam", email);
+                }
                 startActivity(forgotPwdIntent);
                 break;
         }
