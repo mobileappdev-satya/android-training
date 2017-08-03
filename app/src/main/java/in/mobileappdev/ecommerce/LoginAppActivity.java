@@ -75,10 +75,14 @@ public class LoginAppActivity extends AppCompatActivity implements View.OnClickL
         int id = view.getId();
 
         switch (id){
-           /* case R.id.btnSignIn :
-                Intent signInIntent = new Intent(LoginAppActivity.this, RegisterActivity.class);
+            case R.id.btnSignIn :
+                Intent signInIntent = new Intent(LoginAppActivity.this, HomeActivity.class);
+                String email = edtUsrname.getText().toString();
+                if(email.length()>0){
+                    signInIntent.putExtra("usernam", email);
+                }
                 startActivity(signInIntent);
-                break;*/
+                break;
             case R.id.txt_create_account:
                 Intent registerIntent = new Intent(LoginAppActivity.this, RegisterActivity.class);
                 startActivity(registerIntent);
@@ -86,9 +90,9 @@ public class LoginAppActivity extends AppCompatActivity implements View.OnClickL
             case R.id.txt_forgot_pwd :
                 Intent forgotPwdIntent = new Intent(LoginAppActivity.this, ForgotPasswordActivity.class);
 
-                String email = edtUsrname.getText().toString();
-                if(email.length()>0){
-                    forgotPwdIntent.putExtra("usernam", email);
+                String email1 = edtUsrname.getText().toString();
+                if(email1.length()>0){
+                    forgotPwdIntent.putExtra("usernam", email1);
                 }
                 startActivity(forgotPwdIntent);
                 break;
