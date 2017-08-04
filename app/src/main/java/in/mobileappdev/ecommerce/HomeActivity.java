@@ -23,5 +23,7 @@ public class HomeActivity extends AppCompatActivity {
         if(username != null){
             txtUserName.setText(username.toLowerCase());
         }
+
+
     }
 }

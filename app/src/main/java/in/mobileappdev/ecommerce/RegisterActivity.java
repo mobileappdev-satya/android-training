@@ -22,7 +22,6 @@ public class RegisterActivity extends AppCompatActivity  implements View.OnClick
         password = (EditText) findViewById(R.id.input_password);
         mobileNo = (EditText) findViewById(R.id.input_mobile);
         register = (Button) findViewById(R.id.btn_registr);
-        login = (Button) findViewById(R.id.btn_login);
 
         register.setOnClickListener(this);
         login.setOnClickListener(this);
@@ -38,10 +37,6 @@ public class RegisterActivity extends AppCompatActivity  implements View.OnClick
                Toast.makeText(this,"SUCCESSFULLY REGISTER",Toast.LENGTH_LONG).show();
                /* Intent i = new Intent(getApplicationContext(), );
                 startActivity(i);*/
-                break;
-            case R.id.btn_login:
-                Intent in = new Intent(getApplicationContext(), LoginAppActivity.class);
-                startActivity(in);
                 break;
         }
     }

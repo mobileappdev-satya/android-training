@@ -1,13 +1,22 @@
 package in.mobileappdev.ecommerce;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import in.mobileappdev.ecommerce.reciever.NetworkBroadcastReciever;
+import in.mobileappdev.ecommerce.service.ECommerceService;
 
 public class LoginAppActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -42,12 +51,20 @@ public class LoginAppActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onResume() {
         super.onResume();
+
+        createCustomDialog();
+
+        stopService(new Intent(this, ECommerceService.class));
+        NetworkBroadcastReciever networkBroadcastReciever = new NetworkBroadcastReciever();
+        IntentFilter filter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
+        registerReceiver(networkBroadcastReciever, filter);
         Log.d(TAG, "LifeCycle - onResume");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        startService(new Intent(this, ECommerceService.class));
         Log.d(TAG, "LifeCycle - onPause");
     }
 
@@ -80,8 +97,11 @@ public class LoginAppActivity extends AppCompatActivity implements View.OnClickL
                 String email = edtUsrname.getText().toString();
                 if(email.length()>0){
                     signInIntent.putExtra("usernam", email);
+                    startActivity(signInIntent);
+                }else {
+                    showEmailAlertDialog();
                 }
-                startActivity(signInIntent);
+
                 break;
             case R.id.txt_create_account:
                 Intent registerIntent = new Intent(LoginAppActivity.this, RegisterActivity.class);
@@ -97,5 +117,53 @@ public class LoginAppActivity extends AppCompatActivity implements View.OnClickL
                 startActivity(forgotPwdIntent);
                 break;
         }
+    }
+
+    private void showEmailAlertDialog(){
+        AlertDialog.Builder alertBuilder = new  AlertDialog.Builder(this);
+        alertBuilder.setTitle("Fields required");
+        alertBuilder.setMessage("Pleas enter all mandatory fields to proceed");
+        alertBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(LoginAppActivity.this, "No Clicked", Toast.LENGTH_LONG).show();
+                finish();
+            }
+        });
+
+        alertBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(LoginAppActivity.this, "YES Clicked", Toast.LENGTH_LONG).show();
+            }
+        });
+        Dialog dialog = alertBuilder.create();
+        dialog.show();
+
+    }
+
+    private void createCustomDialog(){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            // Get the layout inflater
+            LayoutInflater inflater = getLayoutInflater();
+
+            // Inflate and set the layout for the dialog
+            // Pass null as the parent view because its going in the dialog layout
+            builder.setView(inflater.inflate(R.layout.dialog_welcome, null))
+                    // Add action buttons
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            // sign in the user ...
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                        }
+                    });
+        Dialog dialog = builder.create();
+        dialog.show();
+
     }
 }
