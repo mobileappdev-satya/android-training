@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -22,11 +23,20 @@ public class LoginAppActivity extends AppCompatActivity implements View.OnClickL
 
     private final String TAG = LoginAppActivity.class.getSimpleName();
     private EditText edtUsrname,edtPassword;
+    private SharedPreferences sp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         Log.d(TAG, "LifeCycle - onCreate");
+        sp = getSharedPreferences("in.mobileappdev.ecommerce", MODE_PRIVATE);
+
+        if(sp.getBoolean("isLogged", false)){
+            startActivity(new Intent(this, HomeActivity.class));
+            finish();
+        }
+
+
         //registering views from XML
         Button buttonSignIn = (Button) findViewById(R.id.btnSignIn);
         TextView textCreateAccount = (TextView) findViewById(R.id.txt_create_account);
@@ -97,6 +107,9 @@ public class LoginAppActivity extends AppCompatActivity implements View.OnClickL
                 String email = edtUsrname.getText().toString();
                 if(email.length()>0){
                     signInIntent.putExtra("usernam", email);
+                    sp.edit().putBoolean("isLogged", true).apply();
+                    sp.edit().putString("username", email).apply();
+
                     startActivity(signInIntent);
                 }else {
                     showEmailAlertDialog();
