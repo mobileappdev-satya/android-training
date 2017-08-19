@@ -106,7 +106,7 @@ public class LoginAppActivity extends AppCompatActivity implements View.OnClickL
                 Intent signInIntent = new Intent(LoginAppActivity.this, HomeActivity.class);
                 String email = edtUsrname.getText().toString();
                 if(email.length()>0){
-                    signInIntent.putExtra("usernam", email);
+                    //signInIntent.putExtra("usernam", email);
                     sp.edit().putBoolean("isLogged", true).apply();
                     sp.edit().putString("username", email).apply();
 
