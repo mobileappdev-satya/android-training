@@ -14,14 +14,19 @@
         <activity android:name=".LoginAppActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".RegisterActivity" />
         <activity android:name=".ForgotPasswordActivity" />
-        <activity android:name=".HomeActivity"/>
-        <service android:name=".service.ECommerceService"/>
-        <receiver android:name=".reciever.NetworkBroadcastReciever"/>
+        <activity android:name=".HomeActivity" />
+
+        <service android:name=".service.ECommerceService" />
+
+        <receiver android:name=".reciever.NetworkBroadcastReciever" />
+
+        <activity android:name=".AddItemActivity"></activity>
     </application>
 
 </manifest>
