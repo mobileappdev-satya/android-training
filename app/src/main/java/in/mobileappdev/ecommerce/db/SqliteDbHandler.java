@@ -7,6 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
+
+import in.mobileappdev.ecommerce.model.Item;
+
 /**
  * Created by Techjini on 8/17/2017.
  */
@@ -56,5 +60,27 @@ public class SqliteDbHandler extends SQLiteOpenHelper{
         int count  = cursor.getCount();
         cursor.close();
         return count;
+    }
+
+    public ArrayList<Item> getAllItems(){
+
+        ArrayList<Item> allItems = new ArrayList<>();
+
+        String SELECT_TEMS = "SELECT * FROM "+TABLE_ITEMS+";";
+        Cursor cursor = getWritableDatabase().rawQuery(SELECT_TEMS, null);
+
+        while(cursor.moveToNext()){
+            int id = cursor.getInt(cursor.getColumnIndex(SqliteDbHandler.COL_ITEM_ID) );
+            String name = cursor.getString(cursor.getColumnIndex(SqliteDbHandler.COL_ITEM_NAME) );
+            String desc = cursor.getString(cursor.getColumnIndex(SqliteDbHandler.COL_ITEM_DESC) );
+            int cost = cursor.getInt(cursor.getColumnIndex(SqliteDbHandler.COL_ITEM_COST) );
+            int qty = cursor.getInt(cursor.getColumnIndex(SqliteDbHandler.COL_ITEM_QUANTITY));
+
+            Item item = new Item(id, name, desc, cost, qty);
+            allItems.add(item);
+        }
+
+        cursor.close();
+        return allItems;
     }
 }
