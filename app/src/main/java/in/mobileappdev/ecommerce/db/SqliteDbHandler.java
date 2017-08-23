@@ -34,7 +34,7 @@ public class SqliteDbHandler extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_ITEMS_TABLE = "CREATE TABLE "+TABLE_ITEMS+" ( "+COL_ITEM_ID+" INT, "+COL_ITEM_NAME+" VARCHAR(20) , "+COL_ITEM_DESC+" VARCHAR(50), "+COL_ITEM_COST+" INT, "+COL_ITEM_QUANTITY+" INT);";
+        String CREATE_ITEMS_TABLE = "CREATE TABLE "+TABLE_ITEMS+" ( "+COL_ITEM_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+COL_ITEM_NAME+" VARCHAR(20) , "+COL_ITEM_DESC+" VARCHAR(50), "+COL_ITEM_COST+" INT, "+COL_ITEM_QUANTITY+" INT);";
         Log.d(TAG, "CREATE_ITEMS_TABLE = "+CREATE_ITEMS_TABLE);
         db.execSQL(CREATE_ITEMS_TABLE);
     }
@@ -82,5 +82,26 @@ public class SqliteDbHandler extends SQLiteOpenHelper{
 
         cursor.close();
         return allItems;
+    }
+
+    public Item getItem(int itemid){
+        Item item = null;
+        String SELECT_TEMS = "SELECT * FROM "+TABLE_ITEMS+" WHERE "+SqliteDbHandler.COL_ITEM_ID+"="+itemid+";";
+        Cursor cursor = getWritableDatabase().rawQuery(SELECT_TEMS, null);
+
+        while(cursor.moveToNext()){
+            int id = cursor.getInt(cursor.getColumnIndex(SqliteDbHandler.COL_ITEM_ID) );
+            String name = cursor.getString(cursor.getColumnIndex(SqliteDbHandler.COL_ITEM_NAME) );
+            String desc = cursor.getString(cursor.getColumnIndex(SqliteDbHandler.COL_ITEM_DESC) );
+            int cost = cursor.getInt(cursor.getColumnIndex(SqliteDbHandler.COL_ITEM_COST) );
+            int qty = cursor.getInt(cursor.getColumnIndex(SqliteDbHandler.COL_ITEM_QUANTITY));
+
+            item = new Item(id, name, desc, cost, qty);
+        }
+
+        cursor.close();
+
+        return item;
+
     }
 }

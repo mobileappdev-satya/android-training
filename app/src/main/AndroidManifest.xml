@@ -26,7 +26,11 @@
 
         <receiver android:name=".reciever.NetworkBroadcastReciever" />
 
-        <activity android:name=".AddItemActivity"></activity>
+        <activity android:name=".AddItemActivity" />
+        <activity
+            android:name=".ItemDetailsActivity"
+            android:label="@string/title_activity_item_details"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
