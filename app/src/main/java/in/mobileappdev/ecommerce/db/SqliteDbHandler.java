@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import in.mobileappdev.ecommerce.model.Item;
 
@@ -104,4 +106,30 @@ public class SqliteDbHandler extends SQLiteOpenHelper{
         return item;
 
     }
+
+    public ArrayList<Item> getAllItemsInCart(Set<String> ids){
+
+        ArrayList<Item> allItems = new ArrayList<>();
+
+        String[] columns = {COL_ITEM_ID, COL_ITEM_NAME, COL_ITEM_COST};
+        String whereClause = COL_ITEM_ID+"=?";
+        String[] selectionArgs = ids.toArray((new String[ids.size()]));
+
+        Cursor cursor=  getWritableDatabase().query(TABLE_ITEMS, columns, whereClause, selectionArgs, null, null,null);
+
+        while(cursor.moveToNext()){
+            int id = cursor.getInt(cursor.getColumnIndex(SqliteDbHandler.COL_ITEM_ID) );
+            String name = cursor.getString(cursor.getColumnIndex(SqliteDbHandler.COL_ITEM_NAME) );
+            String desc = cursor.getString(cursor.getColumnIndex(SqliteDbHandler.COL_ITEM_DESC) );
+            int cost = cursor.getInt(cursor.getColumnIndex(SqliteDbHandler.COL_ITEM_COST) );
+            int qty = cursor.getInt(cursor.getColumnIndex(SqliteDbHandler.COL_ITEM_QUANTITY));
+
+            Item item = new Item(id, name, desc, cost, qty);
+            allItems.add(item);
+        }
+
+        cursor.close();
+        return allItems;
+    }
+
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,6 +9,20 @@
     tools:context="in.mobileappdev.ecommerce.ItemDetailsActivity"
     tools:showIn="@layout/activity_item_details">
 
-
-
-</LinearLayout>
+    <LinearLayout
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/addToCart"
+            style="@style/CartButtons"
+            android:text="Add to Cart"
+            android:onClick="addToCartClick"/>
+        <Button
+            android:id="@+id/buyNow"
+            style="@style/CartButtons"
+            android:text="Buy Now"
+            android:onClick="buyNowClick"/>
+    </LinearLayout>
+</RelativeLayout>
