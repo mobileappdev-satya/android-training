@@ -115,7 +115,8 @@ public class SqliteDbHandler extends SQLiteOpenHelper{
         String whereClause = COL_ITEM_ID+"=?";
         String[] selectionArgs = ids.toArray((new String[ids.size()]));
 
-        Cursor cursor=  getWritableDatabase().query(TABLE_ITEMS, columns, whereClause, selectionArgs, null, null,null);
+       // Cursor cursor=  getWritableDatabase().query(TABLE_ITEMS, columns, whereClause, selectionArgs, null, null,null);
+        Cursor cursor=  getWritableDatabase().rawQuery("SELECT * FROM "+TABLE_ITEMS+" WHERE "+whereClause, selectionArgs);
 
         while(cursor.moveToNext()){
             int id = cursor.getInt(cursor.getColumnIndex(SqliteDbHandler.COL_ITEM_ID) );
