@@ -111,8 +111,8 @@ public class SqliteDbHandler extends SQLiteOpenHelper{
 
         ArrayList<Item> allItems = new ArrayList<>();
 
-        String[] columns = {COL_ITEM_ID, COL_ITEM_NAME, COL_ITEM_COST};
-        String whereClause = COL_ITEM_ID+"=?";
+        String whereClause = COL_ITEM_ID+" = ( ?,? )";
+
         String[] selectionArgs = ids.toArray((new String[ids.size()]));
 
        // Cursor cursor=  getWritableDatabase().query(TABLE_ITEMS, columns, whereClause, selectionArgs, null, null,null);
