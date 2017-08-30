@@ -30,6 +30,14 @@ public class CartListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart_list);
+        cartIteems = new ArrayList<>();
+
+        //dummy
+        for(int i=0;i<20;i++){
+            int j =i+1;
+            Item item = new Item(j, "Item "+j, "Item Description "+j, 10*j, j*2);
+            cartIteems.add(item);
+        }
 
         sqliteDbHandler = new SqliteDbHandler(this, SqliteDbHandler.DB_NAME, null, 1);
         SharedPreferences sp = getSharedPreferences("in.mobileappdev.ecommerce",MODE_PRIVATE);
@@ -47,7 +55,7 @@ public class CartListActivity extends AppCompatActivity {
                 LinearLayoutManager.VERTICAL);
         recyclerView.addItemDecoration(mDividerItemDecoration);
         //
-        cartIteems = sqliteDbHandler.getAllItems();
+       // cartIteems = sqliteDbHandler.getAllItems();
 
         cartItemsAdapter= new CartItemsAdapter(cartIteems, this);
         cartItemsAdapter.setCartItemOptionClickListner(new CartItemOptionClickListner() {
@@ -68,11 +76,6 @@ public class CartListActivity extends AppCompatActivity {
         recyclerView.setAdapter(cartItemsAdapter);
 
         Log.d(TAG, "CART ITEM SIZE : "+cartIteems.size());
-
-        //recycler view
-        //adaper
-        //bind
-        //two buttons, one is for delete from cart,second one to go buying screen
 
     }
 }
