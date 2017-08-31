@@ -30,21 +30,12 @@ public class CartListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart_list);
-        cartIteems = new ArrayList<>();
-
-        //dummy
-        for(int i=0;i<20;i++){
-            int j =i+1;
-            Item item = new Item(j, "Item "+j, "Item Description "+j, 10*j, j*2);
-            cartIteems.add(item);
-        }
 
         sqliteDbHandler = new SqliteDbHandler(this, SqliteDbHandler.DB_NAME, null, 1);
         SharedPreferences sp = getSharedPreferences("in.mobileappdev.ecommerce",MODE_PRIVATE);
         Set<String> itemsinCart = sp.getStringSet("itemsincart", new HashSet<String>());
-
+        cartIteems = new ArrayList<>();
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view_cart_items);
-
 
         //layout type grid/linear
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -54,8 +45,8 @@ public class CartListActivity extends AppCompatActivity {
         DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 LinearLayoutManager.VERTICAL);
         recyclerView.addItemDecoration(mDividerItemDecoration);
-        //
-       // cartIteems = sqliteDbHandler.getAllItems();
+
+        cartIteems.addAll(sqliteDbHandler.getAllItemsInCart(itemsinCart));
 
         cartItemsAdapter= new CartItemsAdapter(cartIteems, this);
         cartItemsAdapter.setCartItemOptionClickListner(new CartItemOptionClickListner() {

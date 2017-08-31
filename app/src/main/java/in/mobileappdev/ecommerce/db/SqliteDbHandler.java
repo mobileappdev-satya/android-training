@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Set;
 
 import in.mobileappdev.ecommerce.model.Item;
@@ -111,13 +110,16 @@ public class SqliteDbHandler extends SQLiteOpenHelper{
 
         ArrayList<Item> allItems = new ArrayList<>();
 
-        String whereClause = COL_ITEM_ID+" = ( ?,? )";
-
         String[] selectionArgs = ids.toArray((new String[ids.size()]));
+        String whereClause = COL_ITEM_ID+" IN ( "+ generateQuetionMarks(selectionArgs)+" )";
+        String query = "SELECT * FROM "+TABLE_ITEMS+" WHERE "+whereClause;
+        Log.d(TAG, ""+query);
 
-       // Cursor cursor=  getWritableDatabase().query(TABLE_ITEMS, columns, whereClause, selectionArgs, null, null,null);
-        Cursor cursor=  getWritableDatabase().rawQuery("SELECT * FROM "+TABLE_ITEMS+" WHERE "+whereClause, selectionArgs);
+        //NOT WORKING : Cursor cursor=  getWritableDatabase().query(TABLE_ITEMS, columns, whereClause,selectionArgs, null, null,null);
+        //using rawQuery(query, selectionArgs) working fine here
+        Cursor cursor=  getWritableDatabase().rawQuery(query, selectionArgs);
 
+        Log.d(TAG, " Cursor Count : "+cursor.getCount());
         while(cursor.moveToNext()){
             int id = cursor.getInt(cursor.getColumnIndex(SqliteDbHandler.COL_ITEM_ID) );
             String name = cursor.getString(cursor.getColumnIndex(SqliteDbHandler.COL_ITEM_NAME) );
@@ -132,5 +134,19 @@ public class SqliteDbHandler extends SQLiteOpenHelper{
         cursor.close();
         return allItems;
     }
+
+    private String generateQuetionMarks(String[] attributes) {
+        StringBuilder sb = new StringBuilder();
+        String separator = "";
+        for (String s : attributes) {
+            if (s == null) continue;
+
+            sb.append(separator).append("?");
+            separator = ",";
+        }
+
+        return sb.toString();
+    }
+
 
 }
