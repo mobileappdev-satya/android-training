@@ -16,16 +16,26 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 import in.mobileappdev.ecommerce.adpater.ItemsAdapter;
+import in.mobileappdev.ecommerce.async.GetAllItemsAyncTask;
 import in.mobileappdev.ecommerce.db.SqliteDbHandler;
+import in.mobileappdev.ecommerce.listner.OnFetchItemsListner;
 import in.mobileappdev.ecommerce.model.Item;
 
 public class HomeActivity extends AppCompatActivity {
 
     private static final String TAG = "HomeActivity";
-    private SqliteDbHandler sqliteDbHandler;
+   // private SqliteDbHandler sqliteDbHandler;
     private String username;
     //private  TextView txtUserName;
     private RecyclerView recyclerView;
@@ -39,45 +49,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        ArrayList<Item> jsonArrayItems = new ArrayList<>();
-        try {
-            JSONObject  completeData = new JSONObject(jsonString);
-            JSONArray jsonArray = completeData.getJSONArray("products");
-            for(int i= 0; i<jsonArray.length(); i++){
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                String name = jsonObject.getString("name");
-                int price = jsonObject.getInt("price");
-                String description = jsonObject.getString("description");
-                int qty = jsonObject.getInt("qty");
-                Item item  = new Item(0, name, description,price,qty );
-                jsonArrayItems.add(item);
-            }
-
-            Log.d(TAG, "LEGTH of the JSON Array Contents : "+jsonArrayItems.size());
-
-
-        } catch (JSONException e) {
-            Log.e(TAG, "INVALID Json");
-            e.printStackTrace();
-        }
-
-        try {
-            JSONObject jsonItem = new JSONObject(jsonStrinng1);
-
-            String name = jsonItem.getString("name");
-            int price = jsonItem.getInt("price");
-            String description = jsonItem.getString("description");
-            int qty = jsonItem.getInt("qty");
-
-            Item item  = new Item(0, name, description,price,qty );
-
-        } catch (JSONException e) {
-            Log.e(TAG, "INVALID Json");
-            e.printStackTrace();
-        }
-
-
-        sqliteDbHandler = new SqliteDbHandler(this, SqliteDbHandler.DB_NAME, null, 1);
+       // sqliteDbHandler = new SqliteDbHandler(this, SqliteDbHandler.DB_NAME, null, 1);
         items = new ArrayList<>();
         SharedPreferences sp = getSharedPreferences("in.mobileappdev.ecommerce",MODE_PRIVATE);
         username = sp.getString("username", "UserName");
@@ -100,20 +72,68 @@ public class HomeActivity extends AppCompatActivity {
                 LinearLayoutManager.VERTICAL);
         recyclerView.addItemDecoration(mDividerItemDecoration);
 
+        GetAllItemsAyncTask getAllItemsAyncTask = new GetAllItemsAyncTask();
+        getAllItemsAyncTask.setOnFetchItemsListner(new OnFetchItemsListner() {
+            @Override
+            public void onDownloadStarted() {
+
+            }
+
+            @Override
+            public void onSuccess(String result) {
+                ArrayList<Item> data = parseItemsJSON(result);
+                items.clear();
+                items.addAll(data);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+        });
+        getAllItemsAyncTask.execute("http://mobileappdev.in/androwarriors/items/get_all_products.php");
+
        // txtUserName = (TextView) findViewById(R.id.txt_user_name);
 
+    }
+
+    private ArrayList<Item> parseItemsJSON(String jsonString) {
+        ArrayList<Item> jsonArrayItems = new ArrayList<>();
+        try {
+            JSONObject completeData = new JSONObject(jsonString);
+            JSONArray jsonArray = completeData.getJSONArray("products");
+            for(int i= 0; i<jsonArray.length(); i++){
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String name = jsonObject.getString("name");
+                int price = jsonObject.getInt("price");
+                String description = jsonObject.getString("description");
+                int qty = jsonObject.getInt("quantity");
+                Item item  = new Item(0, name, description,price,qty );
+                jsonArrayItems.add(item);
+            }
+
+            Log.d(TAG, "LEGTH of the JSON Array Contents : "+jsonArrayItems.size());
+
+
+        } catch (JSONException e) {
+            Log.e(TAG, "INVALID Json");
+            e.printStackTrace();
+        }
+
+        return jsonArrayItems;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        int countOftheItems = sqliteDbHandler.getItemsCount();
+      /*  int countOftheItems = sqliteDbHandler.getItemsCount();
         //txtUserName.setText("Hi "+username.toLowerCase()+"\n We have "+countOftheItems +" items for you.");
 
         //data
         items.clear();
         items.addAll(sqliteDbHandler.getAllItems());
-        adapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();*/
 
     }
 
@@ -135,4 +155,7 @@ public class HomeActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+
+
 }

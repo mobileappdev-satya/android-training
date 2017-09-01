@@ -3,11 +3,9 @@ package in.mobileappdev.ecommerce;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,13 +15,18 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import in.mobileappdev.ecommerce.async.DownloadImageAyncTask;
 import in.mobileappdev.ecommerce.db.SqliteDbHandler;
+import in.mobileappdev.ecommerce.listner.OnImageDownloadListner;
 import in.mobileappdev.ecommerce.model.Item;
 
 public class ItemDetailsActivity extends AppCompatActivity {
@@ -34,6 +37,8 @@ public class ItemDetailsActivity extends AppCompatActivity {
     private int itemId;
     private boolean isItemAlreadyInCart = false;
     private Menu menu;
+    private ImageView imgItemIcon;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +50,9 @@ public class ItemDetailsActivity extends AppCompatActivity {
         TextView txtItemDesc = (TextView) findViewById(R.id.item_desc);
         TextView txtItemCost = (TextView) findViewById(R.id.item_cost);
         TextView txtItemQty = (TextView) findViewById(R.id.item_qty);
+        imgItemIcon = (ImageView) findViewById(R.id.item_image);
+        progressBar = (ProgressBar) findViewById(R.id.imgLoading);
+
 
         itemsInCart = new HashSet<String>();
 
@@ -78,6 +86,34 @@ public class ItemDetailsActivity extends AppCompatActivity {
                 txtItemQty.setText("Only "+item.getItemQuantity()+" items left!!");
             }
         }
+
+        Glide.with(this).load("https://i.ytimg.com/vi/lt0WQ8JzLz4/maxresdefault.jpg").into(imgItemIcon);
+
+        DownloadImageAyncTask downloadImageAyncTask = new DownloadImageAyncTask();
+        downloadImageAyncTask.setOnImageDownloadListner(new OnImageDownloadListner() {
+            @Override
+            public void onDownloadStarted() {
+                if(progressBar.isShown()){
+                    progressBar.setVisibility(View.VISIBLE);
+                }
+
+                //Toast.makeText(ItemDetailsActivity.this, "image download started", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onSuccess(Bitmap bitmapImage) {
+                imgItemIcon.setImageBitmap(bitmapImage);
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onFailure() {
+                Toast.makeText(ItemDetailsActivity.this, "image download failed", Toast.LENGTH_LONG).show();
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+
+       //downloadImageAyncTask.execute("http://mobileappdev.in/androwarriors/items/images/android8.jpg","http://mobileappdev.in/androwarriors/items/get_all_products.php");
     }
 
     public void addToCartClick(View v){
