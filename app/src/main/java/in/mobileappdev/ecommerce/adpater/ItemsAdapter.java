@@ -7,8 +7,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
@@ -41,17 +44,19 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsViewHol
     @Override
     public void onBindViewHolder(ItemsViewHolder holder, int position) {
         final Item item = items.get(position);
-        holder.txtItemName.setText(item.getItemName());
-        holder.txtItemDeesc.setText(item.getItemDesc());
-        holder.txtItemCost.setText("Rs. "+item.getItemCost());
-        holder.txtItemQty.setText(""+item.getItemQuantity()+" items left!");
-        Log.d(TAG, "ID "+item.getItemId());
+        holder.txtItemName.setText(item.getName());
+        holder.txtItemDeesc.setText(item.getDescription());
+        holder.txtItemCost.setText("Rs. "+item.getPrice());
+        holder.txtItemQty.setText(""+item.getQuantity()+" items left!");
+
+        Glide.with(context).load(item.getUrl()).into(holder.thumbnail);
+        Log.d(TAG, "ID "+item.getId());
 
         holder.parent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent details = new Intent(context, ItemDetailsActivity.class);
-                details.putExtra("id", item.getItemId());
+                details.putExtra("id", item.getId());
                 context.startActivity(details);
             }
         });
@@ -67,6 +72,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsViewHol
 
         TextView txtItemName,txtItemDeesc, txtItemCost, txtItemQty;
         RelativeLayout parent;
+        ImageView thumbnail;
         public ItemsViewHolder(View itemView) {
             super(itemView);
             parent = (RelativeLayout) itemView.findViewById(R.id.item_parent);
@@ -74,6 +80,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsViewHol
             txtItemDeesc = (TextView) itemView.findViewById(R.id.txt_item_desc);
             txtItemCost = (TextView) itemView.findViewById(R.id.txt_item_cost);
             txtItemQty = (TextView) itemView.findViewById(R.id.txt_item_qty);
+            thumbnail = (ImageView) itemView.findViewById(R.id.item_icon);
         }
     }
 }

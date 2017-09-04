@@ -6,61 +6,82 @@ package in.mobileappdev.ecommerce.model;
 
 public class Item {
 
-    private int itemId;
-    private String itemName;
-    private String itemDesc;
-    private int itemCost;
-    private int itemQuantity;
+    private int id;
+    private String name;
+    private String description;
+    private int price;
+    private int quantity;
+    private int discount;
+    private String url;
 
-    public Item(int itemId, String itemName, String itemDesc, int itemCost, int itemQuantity){
-        this.itemId = itemId;
-        this.itemName = itemName;
-        this.itemDesc = itemDesc;
-        this.itemCost = itemCost;
-        this.itemQuantity = itemQuantity;
+    public Item(int itemId, String itemName, String itemDesc, int itemCost, int itemQuantity, int disciount, String url) {
+        this.id = itemId;
+        this.name = itemName;
+        this.description = itemDesc;
+        this.price = itemCost;
+        this.quantity = itemQuantity;
+        this.discount = disciount;
+        this.url = url;
     }
+
 
 
     //getter setters
 
 
-    public int getItemId() {
-        return itemId;
+    public int getId() {
+        return id;
     }
 
-    public void setItemId(int itemId) {
-        this.itemId = itemId;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getItemName() {
-        return itemName;
+    public String getName() {
+        return name;
     }
 
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getItemDesc() {
-        return itemDesc;
+    public String getDescription() {
+        return description;
     }
 
-    public void setItemDesc(String itemDesc) {
-        this.itemDesc = itemDesc;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public int getItemCost() {
-        return itemCost;
+    public int getPrice() {
+        return price;
     }
 
-    public void setItemCost(int itemCost) {
-        this.itemCost = itemCost;
+    public void setPrice(int price) {
+        this.price = price;
     }
 
-    public int getItemQuantity() {
-        return itemQuantity;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setItemQuantity(int itemQuantity) {
-        this.itemQuantity = itemQuantity;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
+    public int getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(int discount) {
+        this.discount = discount;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
 }

@@ -15,4 +15,11 @@
     <string name="sign_up">Sign Up</string>
     <string name="title_activity_item_details">ItemDetailsActivity</string>
     <string name="cart">Cart</string>
+    <string name="something_wrong_happened_please_try_again">Something wrong happened, please try again</string>
+    <string name="title_activity_dashboard">DashboardActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
 </resources>

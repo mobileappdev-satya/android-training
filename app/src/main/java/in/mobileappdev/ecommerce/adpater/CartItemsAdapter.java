@@ -41,7 +41,7 @@ public class CartItemsAdapter extends RecyclerView.Adapter<CartItemsAdapter.Cart
     public void onBindViewHolder(CartViewHolder holder, final int position) {
 
         Item  currentItem = cartItems.get(position);
-        holder.cartItemName.setText(currentItem.getItemName());
+        holder.cartItemName.setText(currentItem.getName());
 
         holder.btnCartBuyNow.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -19,17 +20,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
-import in.mobileappdev.ecommerce.async.DownloadImageAyncTask;
+import in.mobileappdev.ecommerce.async.ECommerceAsyncTask;
 import in.mobileappdev.ecommerce.db.SqliteDbHandler;
-import in.mobileappdev.ecommerce.listner.OnImageDownloadListner;
+import in.mobileappdev.ecommerce.listner.ECommerceAsycTaskListner;
 import in.mobileappdev.ecommerce.model.Item;
 
-public class ItemDetailsActivity extends AppCompatActivity {
+public class ItemDetailsActivity extends AppCompatActivity implements ECommerceAsycTaskListner{
 
     private static final String TAG = "ItemDetailsActivity";
     private SharedPreferences sp;
@@ -79,42 +79,21 @@ public class ItemDetailsActivity extends AppCompatActivity {
 
             Item item = sqliteDbHandler.getItem(itemId);
             if(item != null){
-                Log.d(TAG, "Name : "+item.getItemName());
-                txtItemName.setText(item.getItemName());
-                txtItemDesc.setText(item.getItemDesc());
-                txtItemCost.setText("Rs. "+item.getItemCost());
-                txtItemQty.setText("Only "+item.getItemQuantity()+" items left!!");
+                Log.d(TAG, "Name : "+item.getName());
+                txtItemName.setText(item.getName());
+                txtItemDesc.setText(item.getDescription());
+                txtItemCost.setText("Rs. "+item.getPrice());
+                txtItemQty.setText("Only "+item.getQuantity()+" items left!!");
             }
         }
 
-        Glide.with(this).load("https://i.ytimg.com/vi/lt0WQ8JzLz4/maxresdefault.jpg").into(imgItemIcon);
+       // Glide.with(this).load("https://i.ytimg.com/vi/lt0WQ8JzLz4/maxresdefault.jpg").into(imgItemIcon);
 
-        DownloadImageAyncTask downloadImageAyncTask = new DownloadImageAyncTask();
-        downloadImageAyncTask.setOnImageDownloadListner(new OnImageDownloadListner() {
-            @Override
-            public void onDownloadStarted() {
-                if(progressBar.isShown()){
-                    progressBar.setVisibility(View.VISIBLE);
-                }
+        ECommerceAsyncTask eCommerceAsyncTask = new ECommerceAsyncTask();
+        eCommerceAsyncTask.seteCommerceAsycTaskListner(this);
+        eCommerceAsyncTask.execute("https://i.ytimg.com/vi/lt0WQ8JzLz4/maxresdefault.jpg");
 
-                //Toast.makeText(ItemDetailsActivity.this, "image download started", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onSuccess(Bitmap bitmapImage) {
-                imgItemIcon.setImageBitmap(bitmapImage);
-                progressBar.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onFailure() {
-                Toast.makeText(ItemDetailsActivity.this, "image download failed", Toast.LENGTH_LONG).show();
-                progressBar.setVisibility(View.GONE);
-            }
-        });
-
-       //downloadImageAyncTask.execute("http://mobileappdev.in/androwarriors/items/images/android8.jpg","http://mobileappdev.in/androwarriors/items/get_all_products.php");
-    }
+        }
 
     public void addToCartClick(View v){
         if(!isItemAlreadyInCart){
@@ -153,6 +132,31 @@ public class ItemDetailsActivity extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onDownloadStarted() {
+        if(!progressBar.isShown()){
+            progressBar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onSuccess(InputStream inputStream) {
+        if(progressBar.isShown()){
+            progressBar.setVisibility(View.GONE);
+        }
+
+        //Covert Bitmap
+        Bitmap imageBitmap = BitmapFactory.decodeStream(inputStream);
+        imgItemIcon.setImageBitmap(imageBitmap);
+    }
+
+    @Override
+    public void onFailure() {
+        if(progressBar.isShown()){
+            progressBar.setVisibility(View.GONE);
         }
     }
 }

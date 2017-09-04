@@ -7,7 +7,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import in.mobileappdev.ecommerce.async.MyAsyncTask;
 import in.mobileappdev.ecommerce.db.SqliteDbHandler;
 
 public class AddItemActivity extends AppCompatActivity {

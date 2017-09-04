@@ -77,7 +77,7 @@ public class SqliteDbHandler extends SQLiteOpenHelper{
             int cost = cursor.getInt(cursor.getColumnIndex(SqliteDbHandler.COL_ITEM_COST) );
             int qty = cursor.getInt(cursor.getColumnIndex(SqliteDbHandler.COL_ITEM_QUANTITY));
 
-            Item item = new Item(id, name, desc, cost, qty);
+            Item item = new Item(id, name, desc, cost, qty, 0, "");
             allItems.add(item);
         }
 
@@ -97,7 +97,7 @@ public class SqliteDbHandler extends SQLiteOpenHelper{
             int cost = cursor.getInt(cursor.getColumnIndex(SqliteDbHandler.COL_ITEM_COST) );
             int qty = cursor.getInt(cursor.getColumnIndex(SqliteDbHandler.COL_ITEM_QUANTITY));
 
-            item = new Item(id, name, desc, cost, qty);
+            item = new Item(id, name, desc, cost, qty,0,"");
         }
 
         cursor.close();
@@ -127,7 +127,7 @@ public class SqliteDbHandler extends SQLiteOpenHelper{
             int cost = cursor.getInt(cursor.getColumnIndex(SqliteDbHandler.COL_ITEM_COST) );
             int qty = cursor.getInt(cursor.getColumnIndex(SqliteDbHandler.COL_ITEM_QUANTITY));
 
-            Item item = new Item(id, name, desc, cost, qty);
+            Item item = new Item(id, name, desc, cost, qty, 0, "");
             allItems.add(item);
         }
 

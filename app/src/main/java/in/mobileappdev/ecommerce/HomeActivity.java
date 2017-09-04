@@ -1,7 +1,9 @@
 package in.mobileappdev.ecommerce;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -11,26 +13,29 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 
 import in.mobileappdev.ecommerce.adpater.ItemsAdapter;
-import in.mobileappdev.ecommerce.async.GetAllItemsAyncTask;
-import in.mobileappdev.ecommerce.db.SqliteDbHandler;
-import in.mobileappdev.ecommerce.listner.OnFetchItemsListner;
+import in.mobileappdev.ecommerce.async.ECommerceAsyncTask;
+import in.mobileappdev.ecommerce.listner.ECommerceAsycTaskListner;
+import in.mobileappdev.ecommerce.model.GetAllItemsResponse;
 import in.mobileappdev.ecommerce.model.Item;
+import in.mobileappdev.ecommerce.restclient.ECommerceHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -41,13 +46,45 @@ public class HomeActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ItemsAdapter adapter;
     private ArrayList<Item> items;
+    private TextView txtErrorMsg;
+    private LinearLayout layoutError;
+    private ProgressDialog progressDialog;
+    private String json = null;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private ECommerceAsyncTask eCommerceAsyncTask;
 
-    private String jsonString = "{\"products\":[{\"id\":\"null\",\"name\":\"Panasonic P77 (Grey, 16 GB) (1 GB RAM)\",\"price\":\"6\",\"discount\":\"24\",\"description\":\"Fun or work - with the Panasonic P77, you can have an entertaining time, thanks to its 12.7 cm (5) HD IPS screen and 1 GHz quad-core processor.\",\"quantity\":\"10\",\"url\":\"https:\\/\\/www.lootdealsindia.in\\/wp-content\\/uploads\\/thumbs_dir\\/panasonic-p77-grey-16-gb1-gb-ram-ndngbrbxiz5jgeeh6yxvxihw3hc0wuhe4x1mysh8fe.jpeg\"},{\"id\":\"null\",\"name\":\"SAF BUDDHA PREMIUM LARGE 4 PANEL PAINTING Ink Pain\",\"price\":\"4500\",\"discount\":\"80\",\"description\":\"Overview A beautiful painting involves the action or skill of using paint in the right manner; hence, the end product will be a picture that can speak a thousand words they say. Arts have been in trend for quite some time now. It can give different viewer different meanings Style and Design The SAF Sparkle Large Panel Painting is quite abstract and mysteriously beautiful. You can gift this to a family or a friend\",\"quantity\":\"8\",\"url\":\"http:\\/\\/secularbuddhism.org\\/wp-content\\/uploads\\/2011\\/06\\/budda1.jpg\"}],\"success\":\"1\"}";
-    private  String jsonStrinng1 = "{\"id\":\"null\",\"name\":\"Panasonic P77 (Grey, 16 GB) (1 GB RAM)\",\"price\":\"100\",\"discount\":\"24\",\"description\":\"Fun or work - with the Panasonic P77, you can have an entertaining time, thanks to its 12.7 cm (5) HD IPS screen and 1 GHz quad-core processor.\",\"quantity\":\"10\",\"url\":\"https:\\/\\/www.lootdealsindia.in\\/wp-content\\/uploads\\/thumbs_dir\\/panasonic-p77-grey-16-gb1-gb-ram-ndngbrbxiz5jgeeh6yxvxihw3hc0wuhe4x1mysh8fe.jpeg\"}";
-    @Override
+     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+         progressDialog = new ProgressDialog(this);
+
+         ECommerceHttpClient httpClient = ECommerceHttpClient.getInstance();
+         Call<GetAllItemsResponse> allUsers =  httpClient.getHttpService().getAllProducts();
+         allUsers.enqueue(new Callback<GetAllItemsResponse>() {
+             @Override
+             public void onResponse(Call<GetAllItemsResponse> call, Response<GetAllItemsResponse> response) {
+                 Log.d(TAG, "ECommerceHttpClient - onResponse");
+             }
+
+             @Override
+             public void onFailure(Call<GetAllItemsResponse> call, Throwable t) {
+                 Log.d(TAG, "ECommerceHttpClient - onFailure");
+             }
+         });
+
+         txtErrorMsg = (TextView) findViewById(R.id.error_msh_home);
+         layoutError = (LinearLayout) findViewById(R.id.error_layout);
+         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+
+         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+             @Override
+             public void onRefresh() {
+                // eCommerceAsyncTask.execute("http://mobileappdev.in/androwarriors/items/get_all_products.php");
+             }
+         });
+
+
 
        // sqliteDbHandler = new SqliteDbHandler(this, SqliteDbHandler.DB_NAME, null, 1);
         items = new ArrayList<>();
@@ -71,30 +108,70 @@ public class HomeActivity extends AppCompatActivity {
         DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 LinearLayoutManager.VERTICAL);
         recyclerView.addItemDecoration(mDividerItemDecoration);
-
-        GetAllItemsAyncTask getAllItemsAyncTask = new GetAllItemsAyncTask();
-        getAllItemsAyncTask.setOnFetchItemsListner(new OnFetchItemsListner() {
+        eCommerceAsyncTask = new ECommerceAsyncTask();
+        eCommerceAsyncTask.seteCommerceAsycTaskListner(new ECommerceAsycTaskListner() {
             @Override
             public void onDownloadStarted() {
-
+                progressDialog.setMessage("Loading Products...");
+                    progressDialog.show();
             }
 
             @Override
-            public void onSuccess(String result) {
-                ArrayList<Item> data = parseItemsJSON(result);
+            public void onSuccess(final InputStream inputStream) {
+
+                if(null == inputStream){
+                    return;
+                }
+
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        BufferedReader r = new BufferedReader(new InputStreamReader(inputStream));
+                        StringBuilder sb = new StringBuilder();
+                        String line;
+                        try {
+                            while ((line = r.readLine()) != null) {
+                                sb.append(line);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        json = sb.toString();
+                    }
+                });
+
+
+                if(progressDialog.isShowing()){
+                    progressDialog.dismiss();
+                }
+
                 items.clear();
-                items.addAll(data);
+                items.addAll(parseItemsJSON(json));
+
+                if(items.size()==0){
+                    recyclerView.setVisibility(View.GONE);
+                    layoutError.setVisibility(View.VISIBLE);
+                    txtErrorMsg.setText("No Products found  ");
+                }
                 adapter.notifyDataSetChanged();
+
+
+
             }
 
             @Override
             public void onFailure() {
+                if(progressDialog.isShowing()){
+                    progressDialog.dismiss();
+                }
+                recyclerView.setVisibility(View.GONE);
+                layoutError.setVisibility(View.VISIBLE);
+                //txtErrorMsg.setText("Error msg from Code");
 
             }
         });
-        getAllItemsAyncTask.execute("http://mobileappdev.in/androwarriors/items/get_all_products.php");
-
-       // txtUserName = (TextView) findViewById(R.id.txt_user_name);
+        eCommerceAsyncTask.execute("http://mobileappdev.in/androwarriors/items/get_all_products.php");
 
     }
 
@@ -109,7 +186,9 @@ public class HomeActivity extends AppCompatActivity {
                 int price = jsonObject.getInt("price");
                 String description = jsonObject.getString("description");
                 int qty = jsonObject.getInt("quantity");
-                Item item  = new Item(0, name, description,price,qty );
+                int discount = jsonObject.getInt("discount");
+                String url = jsonObject.getString("url");
+                Item item  = new Item(0, name, description,price,qty, discount, url );
                 jsonArrayItems.add(item);
             }
 
