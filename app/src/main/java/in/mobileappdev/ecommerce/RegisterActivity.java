@@ -8,6 +8,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import in.mobileappdev.ecommerce.model.GenericResponse;
+import in.mobileappdev.ecommerce.restclient.ECommerceHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class RegisterActivity extends AppCompatActivity  implements View.OnClickListener {
     EditText firstname, lastname, email, password, mobileNo;
     Button register, login;
@@ -34,10 +40,26 @@ public class RegisterActivity extends AppCompatActivity  implements View.OnClick
         switch (id) {
 
            case R.id.btn_registr:
-               Toast.makeText(this,"SUCCESSFULLY REGISTER",Toast.LENGTH_LONG).show();
-               /* Intent i = new Intent(getApplicationContext(), );
-                startActivity(i);*/
+                regisetrUser();
                 break;
         }
+    }
+
+    private void regisetrUser() {
+
+        ECommerceHttpClient client = ECommerceHttpClient.getInstance();
+        Call<GenericResponse> createuser = client.getHttpService().createNewUser(firstname.getText().toString(), password.getText().toString(), email.getText().toString(), mobileNo.getText().toString(), "");
+        createuser.enqueue(new Callback<GenericResponse>() {
+            @Override
+            public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
+                GenericResponse genericResponse = response.body();
+                Toast.makeText(RegisterActivity.this, ""+genericResponse.getMessage(), Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(Call<GenericResponse> call, Throwable t) {
+
+            }
+        });
     }
 }

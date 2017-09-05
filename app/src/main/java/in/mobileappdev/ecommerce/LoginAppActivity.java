@@ -61,9 +61,6 @@ public class LoginAppActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onResume() {
         super.onResume();
-
-        createCustomDialog();
-
         stopService(new Intent(this, ECommerceService.class));
         NetworkBroadcastReciever networkBroadcastReciever = new NetworkBroadcastReciever();
         IntentFilter filter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
