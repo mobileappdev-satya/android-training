@@ -22,7 +22,12 @@ public interface ECommerseHttpService {
     Call<GenericResponse> createPruduct(@Field("name") String name, @Field("discription") String description, @Field("discount") int d, int price, String url);
 
     @FormUrlEncoded
-    @POST("newuser.php")
-    Call<GenericResponse>  createNewUser(@Field("username") String un, @Field("password") String pwd, @Field("email") String email, @Field("mobile") String mobile, @Field("address") String address);
+    @POST("api/index.php")
+    Call<GenericResponse>  createNewUser(@Field("tag") String tag, @Field("firstname") String firstName,@Field("lastname") String lastName, @Field("password") String pwd, @Field("email") String email, @Field("mobile") String mobile);
+
+    @FormUrlEncoded
+    @POST("api/index.php")
+    Call<GenericResponse>  loginUser(@Field("tag") String tag,  @Field("email") String firstName,@Field("password") String lastName);
+
 }
 

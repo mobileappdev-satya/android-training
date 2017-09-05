@@ -12,12 +12,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
 import in.mobileappdev.ecommerce.ItemDetailsActivity;
 import in.mobileappdev.ecommerce.R;
 import in.mobileappdev.ecommerce.model.Item;
+import in.mobileappdev.ecommerce.utils.Utils;
 
 /**
  * Created by Techjini on 8/22/2017.
@@ -46,7 +48,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsViewHol
         final Item item = items.get(position);
         holder.txtItemName.setText(item.getName());
         holder.txtItemDeesc.setText(item.getDescription());
-        holder.txtItemCost.setText("Rs. "+item.getPrice());
+
+        holder.txtItemCost.setText("Rs. "+ Utils.getDiscountedPrice(item.getPrice(), item.getDiscount()));
         holder.txtItemQty.setText(""+item.getQuantity()+" items left!");
 
         Glide.with(context).load(item.getUrl()).into(holder.thumbnail);
@@ -55,8 +58,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsViewHol
         holder.parent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Gson gson = new Gson();
+                String itemJSONString = gson.toJson(item);
                 Intent details = new Intent(context, ItemDetailsActivity.class);
-                details.putExtra("id", item.getId());
+                details.putExtra("item", itemJSONString);
                 context.startActivity(details);
             }
         });

@@ -1,6 +1,7 @@
 package in.mobileappdev.ecommerce;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -16,26 +17,34 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import in.mobileappdev.ecommerce.model.GenericResponse;
 import in.mobileappdev.ecommerce.reciever.NetworkBroadcastReciever;
+import in.mobileappdev.ecommerce.restclient.ECommerceHttpClient;
 import in.mobileappdev.ecommerce.service.ECommerceService;
+import in.mobileappdev.ecommerce.utils.Constants;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginAppActivity extends AppCompatActivity implements View.OnClickListener{
 
     private final String TAG = LoginAppActivity.class.getSimpleName();
     private EditText edtUsrname,edtPassword;
     private SharedPreferences sp;
+    private ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         Log.d(TAG, "LifeCycle - onCreate");
         sp = getSharedPreferences("in.mobileappdev.ecommerce", MODE_PRIVATE);
-
+        progressDialog = new ProgressDialog(this);
         if(sp.getBoolean("isLogged", false)){
             startActivity(new Intent(this, HomeActivity.class));
             finish();
         }
 
+        Intent intent = getIntent();
 
         //registering views from XML
         Button buttonSignIn = (Button) findViewById(R.id.btnSignIn);
@@ -44,6 +53,10 @@ public class LoginAppActivity extends AppCompatActivity implements View.OnClickL
 
         edtUsrname = (EditText) findViewById(R.id.edt_username);
         edtPassword = (EditText) findViewById(R.id.edt_password);
+
+        if(intent.getStringExtra(Constants.KEY_USER_EMAIL) != null){
+            edtUsrname.setText(intent.getStringExtra(Constants.KEY_USER_EMAIL));
+        }
 
         //registering click listener
         buttonSignIn.setOnClickListener(this);
@@ -100,18 +113,7 @@ public class LoginAppActivity extends AppCompatActivity implements View.OnClickL
 
         switch (id){
             case R.id.btnSignIn :
-                Intent signInIntent = new Intent(LoginAppActivity.this, HomeActivity.class);
-                String email = edtUsrname.getText().toString();
-                if(email.length()>0){
-                    signInIntent.putExtra("usernam", email);
-                    sp.edit().putBoolean("isLogged", true).apply();
-                    sp.edit().putString("username", email).apply();
-
-                    startActivity(signInIntent);
-                }else {
-                    showEmailAlertDialog();
-                }
-
+                loginUser();
                 break;
             case R.id.txt_create_account:
                 Intent registerIntent = new Intent(LoginAppActivity.this, RegisterActivity.class);
@@ -175,5 +177,75 @@ public class LoginAppActivity extends AppCompatActivity implements View.OnClickL
         Dialog dialog = builder.create();
         dialog.show();
 
+    }
+
+
+    private void loginUser() {
+        progressDialog.setMessage("Signing in...");
+        progressDialog.show();
+        if(!validateFields()){
+            return;
+        }
+
+        ECommerceHttpClient client = ECommerceHttpClient.getInstance();
+        Call<GenericResponse> createuser = client.getHttpService().loginUser("login", edtUsrname.getText().toString(), edtPassword.getText().toString());
+        createuser.enqueue(new Callback<GenericResponse>() {
+            @Override
+            public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
+                progressDialog.dismiss();
+                GenericResponse genericResponse = response.body();
+                if(null == genericResponse){
+                    Toast.makeText(LoginAppActivity.this, "Something wrong happened, Pls try again", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                int status = genericResponse.getSuccess();
+
+                switch (status){
+                    case 0 :
+                        Toast.makeText(LoginAppActivity.this, "Invalid Credintials, Pls try again", Toast.LENGTH_LONG).show();
+                        break;
+                    case 1 :
+                        Toast.makeText(LoginAppActivity.this, ""+genericResponse.getMessage(), Toast.LENGTH_LONG).show();
+                        Intent loginIntent = new Intent(LoginAppActivity.this, LoginAppActivity.class);
+                        sp.edit().putBoolean("isLogged", true).apply();
+                        sp.edit().putString("username", edtUsrname.getText().toString()).apply();
+                        startActivity(loginIntent);
+                        finish();
+                        break;
+
+                    case -1 :
+                        Toast.makeText(LoginAppActivity.this, "User not exists, Please register first", Toast.LENGTH_LONG).show();
+                        break;
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Call<GenericResponse> call, Throwable t) {
+                progressDialog.dismiss();
+                Toast.makeText(LoginAppActivity.this, "onFailure : "+t.getMessage().toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private boolean validateFields() {
+
+        if(edtUsrname.getText().length() == 0 || !isEmailValidAndroid(edtUsrname.getText().toString())){
+            edtUsrname.setError("Please enter valid email id");
+            return false;
+        }
+
+        if(edtPassword.getText().length() == 0 ){
+            edtPassword.setError("Please enter password");
+            return false;
+        }
+
+        return true;
+    }
+
+    boolean isEmailValidAndroid(String email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 }
