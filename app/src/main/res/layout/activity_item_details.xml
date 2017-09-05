@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="in.mobileappdev.ecommerce.ItemDetailsActivity"
+    tools:showIn="@layout/activity_item_details">
+
+    <LinearLayout
+        android:id="@+id/footer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/addToCart"
+            style="@style/CartButtons"
+            android:onClick="addToCartClick"
+            android:text="Add to Cart" />
+
+        <Button
+            android:id="@+id/buyNow"
+            style="@style/CartButtons"
+            android:onClick="buyNowClick"
+            android:text="Buy Now" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/footer_layout"
+        android:layout_alignParentTop="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="170dp">
+                <ImageView
+                    android:id="@+id/item_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="170dp"
+                    android:layout_centerInParent="true" />
+
+                <ProgressBar
+                    android:id="@+id/imgLoading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_centerInParent="true"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/colorPrimary">
+                <TextView
+                    android:id="@+id/item_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:text="ITEM NAME"
+                    android:textColor="@color/color_white"
+                    android:layout_centerVertical="true"/>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:id="@+id/item_cost"
+                    android:textSize="15sp"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:text="Rs. 100000000"
+                    android:padding="10dp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:text="Free Delivery"
+                    android:textSize="15sp"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/item_qty"
+                    android:padding="10dp"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/item_desc"
+                android:padding="10dp"/>
+        </LinearLayout>
+
+
+    </ScrollView>
+</RelativeLayout>

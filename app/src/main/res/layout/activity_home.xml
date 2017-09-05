@@ -7,15 +7,38 @@
     android:layout_height="match_parent"
     tools:context="in.mobileappdev.ecommerce.HomeActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/error_layout"
+        android:layout_centerInParent="true"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="20dp"
-        android:textColor="@color/colorPrimary"
-        android:textSize="20sp"
-        android:text="UserName"
-        android:textStyle="bold"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/txt_user_name"/>
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/robot_msg_error" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/error_msh_home"
+            android:padding="20dp"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/something_wrong_happened_please_try_again"/>
+    </LinearLayout>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/swipeRefreshLayout">
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/recycler_view_items"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
 
 </RelativeLayout>

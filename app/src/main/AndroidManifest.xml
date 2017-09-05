@@ -3,6 +3,7 @@
     package="in.mobileappdev.ecommerce">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -12,16 +13,33 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".LoginAppActivity">
-            <intent-filter>
+          <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".RegisterActivity" />
         <activity android:name=".ForgotPasswordActivity" />
-        <activity android:name=".HomeActivity"/>
-        <service android:name=".service.ECommerceService"/>
-        <receiver android:name=".reciever.NetworkBroadcastReciever"/>
+        <activity android:name=".HomeActivity" />
+        <activity android:name=".AddItemActivity" />
+        <activity android:name=".ItemDetailsActivity" />
+        <activity android:name=".CartListActivity" />
+
+        <service android:name=".service.ECommerceService" />
+
+        <receiver android:name=".reciever.NetworkBroadcastReciever" />
+
+        <activity
+            android:name=".DashboardActivity"
+            android:label="@string/title_activity_dashboard"
+            android:theme="@style/AppTheme.NoActionBar">
+         <!--   <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
     </application>
 
 </manifest>
