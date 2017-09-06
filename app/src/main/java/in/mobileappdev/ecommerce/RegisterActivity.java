@@ -3,6 +3,7 @@ package in.mobileappdev.ecommerce;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -55,7 +56,7 @@ public class RegisterActivity extends AppCompatActivity  implements View.OnClick
         }
 
         ECommerceHttpClient client = ECommerceHttpClient.getInstance();
-        Call<GenericResponse> createuser = client.getHttpService().createNewUser("register",firstname.getText().toString(),lastname.getText().toString(), password.getText().toString(), email.getText().toString(), mobileNo.getText().toString());
+        Call<GenericResponse> createuser = client.getHttpService().createNewUser(Constants.TAG_REGISTER,firstname.getText().toString(),lastname.getText().toString(), password.getText().toString(), email.getText().toString(), mobileNo.getText().toString());
         createuser.enqueue(new Callback<GenericResponse>() {
             @Override
             public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
@@ -86,7 +87,7 @@ public class RegisterActivity extends AppCompatActivity  implements View.OnClick
             return false;
         }
 
-        if(mobileNo.getText().length() == 0){
+        if(!Patterns.PHONE.matcher(mobileNo.getText().toString()).matches()){
             mobileNo.setError("Please enter Mobile number");
             return false;
         }
@@ -98,20 +99,13 @@ public class RegisterActivity extends AppCompatActivity  implements View.OnClick
         return true;
     }
 
-    /**
-     * method is used for checking valid email id format.
-     *
-     * @param email
-     * @return boolean true for valid false for invalid
-     */
+
     public static boolean isEmailValid(String email) {
         String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
-        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
+        return Pattern.compile(expression, Pattern.CASE_INSENSITIVE).matcher(email).matches();
     }
 
     boolean isEmailValidAndroid(String email) {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 }

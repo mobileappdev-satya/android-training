@@ -3,6 +3,9 @@ package in.mobileappdev.ecommerce;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -40,6 +43,18 @@ public class DashboardActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        PaymentActivityFragment fragment = new PaymentActivityFragment();
+        replaceFragment(fragment);
+    }
+
+    private void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        //which fragment to replace
+        fragmentTransaction.replace(R.id.fragment, fragment);
+        fragmentTransaction.commit();
     }
 
     @Override
@@ -79,20 +94,29 @@ public class DashboardActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
+         Fragment fragment = null;
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+             fragment = new SecondFragment();
         } else if (id == R.id.nav_gallery) {
-
+             fragment = new PaymentActivityFragment();
         } else if (id == R.id.nav_slideshow) {
-
+             fragment = new SecondFragment();
         } else if (id == R.id.nav_manage) {
+             fragment = new PaymentActivityFragment();
 
         } else if (id == R.id.nav_share) {
+             fragment = new SecondFragment();
 
         } else if (id == R.id.nav_send) {
+             fragment = new PaymentActivityFragment();
 
         }
+
+        if (fragment != null) {
+
+            replaceFragment(fragment);
+        }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

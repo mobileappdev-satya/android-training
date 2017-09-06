@@ -24,6 +24,7 @@ import in.mobileappdev.ecommerce.async.ECommerceAsyncTask;
 import in.mobileappdev.ecommerce.model.GetAllItemsResponse;
 import in.mobileappdev.ecommerce.model.Item;
 import in.mobileappdev.ecommerce.restclient.ECommerceHttpClient;
+import in.mobileappdev.ecommerce.utils.Constants;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,6 +44,7 @@ public class HomeActivity extends AppCompatActivity {
     private String json = null;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ECommerceAsyncTask eCommerceAsyncTask;
+    private SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +66,7 @@ public class HomeActivity extends AppCompatActivity {
 
         // sqliteDbHandler = new SqliteDbHandler(this, SqliteDbHandler.DB_NAME, null, 1);
 
-        SharedPreferences sp = getSharedPreferences("in.mobileappdev.ecommerce", MODE_PRIVATE);
+        sp = getSharedPreferences(Constants.SP_NAME, MODE_PRIVATE);
         username = sp.getString("username", "UserName");
         items = new ArrayList<>();
         //adapter
@@ -102,6 +104,13 @@ public class HomeActivity extends AppCompatActivity {
             case R.id.add_item:
                 startActivity(new Intent(HomeActivity.this, AddItemActivity.class));
                 return true;
+
+            case R.id.logout:
+                sp.edit().putBoolean(Constants.SP_ISLOGGED_IN, false).apply();
+                startActivity(new Intent(HomeActivity.this, LoginAppActivity.class));
+                finish();
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -113,7 +113,7 @@ public class ItemDetailsActivity extends AppCompatActivity implements ECommerceA
     }
 
     public void buyNowClick(View view) {
-
+        startActivity(new Intent(this, PaymentActivity.class));
     }
 
 

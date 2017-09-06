@@ -39,7 +39,8 @@ public class LoginAppActivity extends AppCompatActivity implements View.OnClickL
         Log.d(TAG, "LifeCycle - onCreate");
         sp = getSharedPreferences("in.mobileappdev.ecommerce", MODE_PRIVATE);
         progressDialog = new ProgressDialog(this);
-        if(sp.getBoolean("isLogged", false)){
+        progressDialog.setCancelable(false);
+        if(sp.getBoolean(Constants.SP_ISLOGGED_IN, false)){
             startActivity(new Intent(this, HomeActivity.class));
             finish();
         }
@@ -188,14 +189,14 @@ public class LoginAppActivity extends AppCompatActivity implements View.OnClickL
         }
 
         ECommerceHttpClient client = ECommerceHttpClient.getInstance();
-        Call<GenericResponse> createuser = client.getHttpService().loginUser("login", edtUsrname.getText().toString(), edtPassword.getText().toString());
+        Call<GenericResponse> createuser = client.getHttpService().loginUser(Constants.TAG_LOGIN, edtUsrname.getText().toString(), edtPassword.getText().toString());
         createuser.enqueue(new Callback<GenericResponse>() {
             @Override
             public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
                 progressDialog.dismiss();
                 GenericResponse genericResponse = response.body();
                 if(null == genericResponse){
-                    Toast.makeText(LoginAppActivity.this, "Something wrong happened, Pls try again", Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginAppActivity.this, R.string.error_message, Toast.LENGTH_LONG).show();
                     return;
                 }
 
@@ -203,19 +204,19 @@ public class LoginAppActivity extends AppCompatActivity implements View.OnClickL
 
                 switch (status){
                     case 0 :
-                        Toast.makeText(LoginAppActivity.this, "Invalid Credintials, Pls try again", Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginAppActivity.this,  genericResponse.getMessage(), Toast.LENGTH_LONG).show();
                         break;
                     case 1 :
                         Toast.makeText(LoginAppActivity.this, ""+genericResponse.getMessage(), Toast.LENGTH_LONG).show();
                         Intent loginIntent = new Intent(LoginAppActivity.this, LoginAppActivity.class);
-                        sp.edit().putBoolean("isLogged", true).apply();
-                        sp.edit().putString("username", edtUsrname.getText().toString()).apply();
+                        sp.edit().putBoolean(Constants.SP_ISLOGGED_IN, true).apply();
+                        sp.edit().putString(Constants.SP_USERNAME, edtUsrname.getText().toString()).apply();
                         startActivity(loginIntent);
                         finish();
                         break;
 
                     case -1 :
-                        Toast.makeText(LoginAppActivity.this, "User not exists, Please register first", Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginAppActivity.this, genericResponse.getMessage(), Toast.LENGTH_LONG).show();
                         break;
                 }
 
@@ -232,12 +233,12 @@ public class LoginAppActivity extends AppCompatActivity implements View.OnClickL
 
     private boolean validateFields() {
 
-        if(edtUsrname.getText().length() == 0 || !isEmailValidAndroid(edtUsrname.getText().toString())){
+        if(!isEmailValidAndroid(edtUsrname.getText().toString())){
             edtUsrname.setError("Please enter valid email id");
             return false;
         }
 
-        if(edtPassword.getText().length() == 0 ){
+        if(edtPassword.getText().length() == 0 || edtPassword.getText().length() < 5){
             edtPassword.setError("Please enter password");
             return false;
         }
